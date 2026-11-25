@@ -94,16 +94,39 @@ body.is-dark {
   --nav-link-dim: var(--ink-soft-on-dark);
 }
 
-/* tiny nav */
+/* tiny nav — floats over the page, no bar; content scrolls under it.
+   Copy this markup into every page and move aria-current to that page's link
+   (home counts as Portfolio). Contacts is a placeholder until feature 14.
+
+   <nav class="nav" aria-label="Main">
+     <a class="nav__name" href="index.html">Yash Santwani</a>
+     <span class="nav__links">
+       <a href="index.html" aria-current="page">Portfolio,</a>
+       <a href="about.html">About,</a>
+       <a href="#contacts">Contacts</a>
+     </span>
+   </nav>
+
+   Colours: set --nav-name / --nav-link / --nav-link-dim on <body>
+   (body.is-dark already does). Name and links can differ, e.g. a light
+   name over a photo with ink links over cream. */
 .nav {
   position: fixed; inset: 0 0 auto 0; z-index: 50;
-  display: flex; justify-content: space-between;
+  display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2);
   padding: var(--s2) var(--s3);
-  font-size: 14px; mix-blend-mode: difference; color: #fff;
+  font-size: 14px; line-height: 1.2; white-space: nowrap;
 }
-.nav a { color: inherit; text-decoration: none; opacity: .6; }
-.nav a[aria-current="page"], .nav a:hover { opacity: 1; }
-.nav__links a + a { margin-left: 6px; }
+.nav a { text-decoration: none; border-radius: 2px; }
+.nav__name { color: var(--nav-name); }
+.nav__links a { color: var(--nav-link-dim); }
+.nav__links a + a { margin-left: 2px; }
+.nav__links a[aria-current="page"] { color: var(--nav-link); font-weight: 600; }
+.nav a:hover { color: var(--nav-link); }
+.nav__name:hover { color: var(--nav-name); }
+.nav a:focus-visible { outline: 1px solid currentColor; outline-offset: 3px; }
+@media (max-width: 420px) {
+  .nav { padding: var(--s2); }
+}
 
 /* section header: 01 — label */
 .section-head {
