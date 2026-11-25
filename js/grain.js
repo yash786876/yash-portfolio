@@ -10,9 +10,9 @@
   style.textContent = `
     .fx-grain, .fx-vignette { position: fixed; pointer-events: none; z-index: 100; }
 
-    /* Oversized so the stepped jitter never exposes an edge. */
+    /* Oversized so the stepped jitter (max 3% of the layer) never exposes an edge. */
     .fx-grain {
-      inset: -15%;
+      inset: -5%;
       background-image: url("${grainUrl}");
       opacity: .12; mix-blend-mode: multiply;
       animation: fx-grain .6s steps(4) infinite;
@@ -33,10 +33,12 @@
       --fx-edge: clamp(8px, 1.2vw, 16px);         /* tight dark frame band */
       --fx-falloff: clamp(60px, 12vw, 180px);     /* broad, light falloff */
       --fx-falloff-alpha: .2;
+      --fx-corner: #0b0a09;                       /* solid fill outside the curve */
+      --fx-corner-spread: 40px;                   /* must exceed --fx-radius */
       inset: 0;
       border-radius: var(--fx-radius);
       box-shadow:
-        0 0 0 40px #0b0a09,
+        0 0 0 var(--fx-corner-spread) var(--fx-corner),
         inset 0 0 var(--fx-edge) calc(var(--fx-edge) * .15) rgba(0, 0, 0, .6),
         inset 0 0 var(--fx-falloff) rgba(0, 0, 0, var(--fx-falloff-alpha));
     }

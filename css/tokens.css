@@ -23,7 +23,8 @@
   font-display: swap;
   src: url("../assets/fonts/fraunces-latin-400-italic.woff2") format("woff2");
 }
-/* Metric-matched fallbacks so the swap barely moves the layout. */
+/* Metric-matched fallbacks so the swap barely moves the layout.
+   Overrides were measured against Arial and Georgia; other local fonts are close, not exact. */
 @font-face {
   font-family: "Outfit Fallback";
   src: local("Arial"), local("Helvetica"), local("Roboto");
@@ -46,7 +47,7 @@
   --bg: #D9CCB4;          /* warm cream */
   --ink: #1E1B18;         /* near-black text */
   --ink-soft: #554E47;    /* labels, captions — ≥ 4.5:1 on cream even under the vignette */
-  --ink-dim: #4A443E;   /* dimmed nav links on cream — keeps ≥ 4.5:1 under the vignette */
+  --ink-dim: #4A443E;     /* dimmed nav links on cream — keeps ≥ 4.5:1 under the vignette */
   --accent: #B5452A;      /* rust — headlines + numbers only */
   --rule: rgba(30, 27, 24, 0.18);
   --bg-dark: #1F1F1F;     /* home / intro */
@@ -122,8 +123,7 @@ body.is-dark {
 .nav__links a { color: var(--nav-link-dim); }
 .nav__links a + a { margin-left: 2px; }
 .nav__links a[aria-current="page"] { color: var(--nav-link); font-weight: 600; }
-.nav a:hover { color: var(--nav-link); }
-.nav__name:hover { color: var(--nav-name); }
+.nav__links a:hover { color: var(--nav-link); }
 .nav a:focus-visible { outline: 1px solid currentColor; outline-offset: 3px; }
 @media (max-width: 420px) {
   .nav { padding: var(--s2); }
