@@ -45,7 +45,7 @@
   /* colour */
   --bg: #D9CCB4;          /* warm cream */
   --ink: #1E1B18;         /* near-black text */
-  --ink-soft: #5A524A;    /* labels, captions */
+  --ink-soft: #554E47;    /* labels, captions — ≥ 4.5:1 on cream even under the vignette */
   --ink-dim: #4A443E;   /* dimmed nav links on cream — keeps ≥ 4.5:1 under the vignette */
   --accent: #B5452A;      /* rust — headlines + numbers only */
   --rule: rgba(30, 27, 24, 0.18);

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About — Yash Santwani</title>
+  <meta name="description" content="About Yash Santwani — founder, venture and AI product builder.">
+  <link rel="preload" href="assets/fonts/outfit-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/tokens.css">
+  <style>
+    /* Stub: proves the shell on a cream page. Feature 4 replaces the body with the
+       split layout and gives the nav name a light colour over the portrait. */
+    .demo { padding: var(--s16) var(--s4); max-width: 900px; margin-left: auto; }
+    .numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--s6); }
+    .numbers p { margin: var(--s1) 0 0; font-size: var(--fs-small); color: var(--ink-soft); }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Main">
+    <a class="nav__name" href="index.html">Yash Santwani</a>
+    <span class="nav__links">
+      <a href="index.html">Portfolio,</a>
+      <a href="about.html" aria-current="page">About,</a>
+      <a href="#contacts">Contacts</a>
+    </span>
+  </nav>
+
+  <main>
+    <section class="demo">
+      <h1 class="display" data-reveal>Making the complex clear</h1>
+      <div class="section-head" style="margin-top: var(--s12)"><span>Numbers</span><span>01</span></div>
+      <div class="numbers">
+        <div><span class="big-number" data-count="3" data-suffix="+">0</span><p>placeholder label</p></div>
+        <div><span class="big-number" data-count="10" data-suffix="+">0</span><p>placeholder label</p></div>
+        <div><span class="big-number" data-count="5">0</span><p>placeholder label</p></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/grain.js" defer></script>
+  <script src="js/reveal.js" defer></script>
+  <script src="js/counter.js" defer></script>
+</body>
+</html>
