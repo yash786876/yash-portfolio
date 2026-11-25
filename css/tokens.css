@@ -1,5 +1,45 @@
 /* Design tokens — source of truth. Change here, not in page CSS. */
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Fraunces:ital,wght@0,400;1,400&display=swap");
+
+/* Fonts — self-hosted latin subsets (SIL OFL, licences in assets/fonts/).
+   Pages preload assets/fonts/outfit-latin-var.woff2. */
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url("../assets/fonts/outfit-latin-var.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/fraunces-latin-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/fraunces-latin-400-italic.woff2") format("woff2");
+}
+/* Metric-matched fallbacks so the swap barely moves the layout. */
+@font-face {
+  font-family: "Outfit Fallback";
+  src: local("Arial"), local("Helvetica"), local("Roboto");
+  size-adjust: 101.5%;
+  ascent-override: 98.5%;
+  descent-override: 25.6%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Fraunces Fallback";
+  src: local("Georgia"), local("Times New Roman");
+  size-adjust: 91.8%;
+  ascent-override: 100.5%;
+  descent-override: 26.5%;
+  line-gap-override: 0%;
+}
 
 :root {
   /* colour */
@@ -11,10 +51,16 @@
   --bg-dark: #1F1F1F;     /* home / intro */
   --ink-on-dark: #F1ECE2;
   --accent-dark: #F2D46B; /* yellow headline on dark */
+  --ink-soft-on-dark: #A39E95; /* dimmed text on dark, ≥ 4.5:1 on --bg-dark */
+
+  /* nav — pages override per theme or per region (name vs links) */
+  --nav-name: var(--ink);
+  --nav-link: var(--ink);
+  --nav-link-dim: var(--ink-soft);
 
   /* type */
-  --font-sans: "Outfit", system-ui, sans-serif;
-  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Outfit", "Outfit Fallback", system-ui, sans-serif;
+  --font-serif: "Fraunces", "Fraunces Fallback", Georgia, serif;
   --fs-display: clamp(64px, 11vw, 160px);
   --fs-h2: clamp(36px, 5vw, 64px);
   --fs-h3: clamp(22px, 2.2vw, 30px);
@@ -41,7 +87,12 @@ body {
   line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
 }
-body.is-dark { background: var(--bg-dark); color: var(--ink-on-dark); }
+body.is-dark {
+  background: var(--bg-dark); color: var(--ink-on-dark);
+  --nav-name: var(--ink-on-dark);
+  --nav-link: var(--ink-on-dark);
+  --nav-link-dim: var(--ink-soft-on-dark);
+}
 
 /* tiny nav */
 .nav {
