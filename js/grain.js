@@ -30,17 +30,26 @@
        the curve, the inset shadow gives the falloff. Thinner on phones. */
     .fx-vignette {
       --fx-radius: clamp(10px, 1.6vw, 22px);
-      --fx-edge: clamp(8px, 1.2vw, 16px);         /* tight dark frame band */
+      --fx-edge: clamp(10px, 1.5vw, 20px);        /* tight dark frame band */
+      --fx-edge-alpha: .85;
       --fx-falloff: clamp(60px, 12vw, 180px);     /* broad, light falloff */
-      --fx-falloff-alpha: .2;
+      --fx-falloff-alpha: .24;
+      --fx-corner-shade: .42;                     /* extra darkening toward the corners */
       --fx-corner: #0b0a09;                       /* solid fill outside the curve */
       --fx-corner-spread: 40px;                   /* must exceed --fx-radius */
       inset: 0;
       border-radius: var(--fx-radius);
       box-shadow:
         0 0 0 var(--fx-corner-spread) var(--fx-corner),
-        inset 0 0 var(--fx-edge) calc(var(--fx-edge) * .15) rgba(0, 0, 0, .6),
+        inset 0 0 var(--fx-edge) calc(var(--fx-edge) * .15) rgba(0, 0, 0, var(--fx-edge-alpha)),
         inset 0 0 var(--fx-falloff) rgba(0, 0, 0, var(--fx-falloff-alpha));
+      /* Corner shade, centred high so the bottom corners go darkest and the
+         top corners (where the nav sits) stay readable at 4.5:1. */
+      background: radial-gradient(ellipse 130% 120% at 50% 26%,
+        transparent 45%,
+        rgba(0, 0, 0, calc(var(--fx-corner-shade) * .12)) 65%,
+        rgba(0, 0, 0, calc(var(--fx-corner-shade) * .45)) 85%,
+        rgba(0, 0, 0, var(--fx-corner-shade)) 100%);
     }
 
     @media (prefers-reduced-motion: reduce) { .fx-grain { animation: none; } }
