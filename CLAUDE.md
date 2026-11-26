@@ -6,6 +6,7 @@ Goal: recreate the *feel* with Yash's own content — never copy text, images or
 ## Before any task
 - Read `docs/solutions/` for past fixes and patterns.
 - Read `docs/backlog.md` to see which feature is next.
+- `CONCEPTS.md` — shared project vocabulary (e.g. global shell, film-frame vignette, contrast budget); relevant when orienting or naming things.
 - One feature per session. Plans go in `docs/plans/`.
 
 ## Stack
