@@ -2,7 +2,7 @@
 
 Build in order. Shared effects first so later pages reuse them. One loop per row.
 
-- [ ] 1. **Global shell** — tokens, fonts, tiny nav, grain + vignette
+- [x] 1. **Global shell** — tokens, fonts, tiny nav, grain + vignette
 - [ ] 2. **Dust canvas** — drifting particles, dark + cream variants
 - [ ] 3. **Intro screen** — name glowing over dust, fades into the page
 - [ ] 4. **About: split layout** — fixed portrait left (photo + dotted half), scrolling right column

@@ -51,3 +51,4 @@ Goal: recreate the *feel* with Yash's own content — never copy text, images or
 
 ## Learned rules
 <!-- /ce-compound adds rules here. Keep this file under ~150 lines; move detail to docs/solutions/. -->
+- Measure text contrast under the grain and vignette from rendered pixels (screenshot the text box, then the same box with the text set to transparent); DevTools and Lighthouse ignore the overlays. Re-measure the nav corners after any overlay, nav-padding or nav-colour change. See `docs/solutions/ui-bugs/contrast-under-grain-vignette-overlays.md`.
