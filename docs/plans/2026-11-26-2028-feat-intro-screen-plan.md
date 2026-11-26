@@ -35,7 +35,7 @@ Today the home page is one dark screen with nothing below it. Scrolling leads no
 
 - KD1. **The intro scrolls away as a normal section, with no pinning.** (session-settled: user-directed — chosen over a pinned cross-fade and over the name flying into the nav, after comparing all three in a browser sketch: the plain scroll felt right.) Governs R3, R4.
 - KD2. **The name's glow fades in on load.** (session-settled: user-directed — chosen over an ink-blot reveal, which would build part of Feature 6 now, and over no entrance.) Governs R1, R2.
-- KD3. **There is no scroll cue.** (session-settled: user-directed — chosen over a small "scroll" hint: keeps the screen clean like reference 01.) Governs R5.
+- KD3. **A small "Scroll" hint sits bottom-centre of the intro.** (session-settled: user-directed — reversed after the first build; originally no cue, to keep the screen clean like reference 01.) Governs R5.
 - KD4. **The placeholder hero shows the headline on plain dark.** (session-settled: user-directed — chosen over a blank section and over a stand-in photo.) Governs R6, R7.
 
 ### Requirements
@@ -46,7 +46,7 @@ Today the home page is one dark screen with nothing below it. Scrolling leads no
 - R2. With reduced motion on, your name is visible from the first frame, with no fade-in.
 - R3. The intro is a normal full-screen section that scrolls up and away with the page.
 - R4. As the intro scrolls away, your name fades. It is fully gone before it reaches the nav, and scrolling back up brings it back. With reduced motion on, the name doesn't fade.
-- R5. There is no scroll cue on the intro.
+- R5. A small "Scroll" text hint sits bottom-centre of the intro, gently pulsing, and hides once scrolling starts. It returns at the very top. With reduced motion on, it doesn't pulse. It keeps 4.5:1 at its faintest.
 
 **Hero placeholder**
 

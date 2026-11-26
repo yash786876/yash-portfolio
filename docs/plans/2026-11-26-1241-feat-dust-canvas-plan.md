@@ -44,7 +44,7 @@ The dust is the first thing a visitor sees on the home page, and later on the Ab
 **Look**
 
 - R1. There are two variants, dark and cream, chosen per page. Dark uses pale specks on the dark background. Cream uses warm brown specks on cream, many of them larger and softer, as if out of focus (reference 04).
-- R2. Each variant has a fixed composed layout matching its reference. Dark has oval clouds bottom-left, middle-right and top-centre, plus a denser band along the bottom edge. Cream has a dense band down the middle that thins toward the sides.
+- R2. Each variant has a fixed composed layout matching its reference. Dark has oval clouds bottom-left, middle-right and top-centre (the bottom band was dropped in a Feature 3 follow-up; the home intro fades the dust out softly instead). Cream has a dense band down the middle that thins toward the sides.
 - R3. Between and around the clouds, a thin layer of specks of mixed size and brightness drifts slowly. Specks inside the clouds shimmer slightly.
 - R4. The clouds drift so slowly that someone watching only just notices. Across a whole visit, the composed layout stays recognisable and never wanders away.
 - R5. No cloud ever drifts over the name zone: the left side at upper-middle height, where the name sits in both references.
@@ -152,13 +152,13 @@ stateDiagram-v2
 - **Dependencies:** None.
 - **Files:** `js/dust.js`.
 - **Approach:**
-  1. Define the `dark` and `light` recipes from the references. Dark has oval clouds bottom-left (about 30%, 80%), middle-right (about 75%, 62%) and top-centre (about 53%, 22%), plus a dense band along the bottom 10%. Light has a vertical band centred near 47% of the width that thins toward the sides. Below 600px, any cloud whose home plus sway would enter the wider phone name zone (see Assumptions) gets a phone-only home outside it. The top-centre dark cloud is the one this affects. If it can't still look like reference 01, the R5 stop condition applies.
+  1. Define the `dark` and `light` recipes from the references. Dark has oval clouds bottom-left (about 30%, 80%), middle-right (about 75%, 62%) and top-centre (about 53%, 22%). The dense bottom band was later removed; the home intro fades the dust out over its bottom ~30% instead (Feature 3 follow-up). Light has a vertical band centred near 47% of the width that thins toward the sides. Below 600px, any cloud whose home plus sway would enter the wider phone name zone (see Assumptions) gets a phone-only home outside it. The top-centre dark cloud is the one this affects. If it can't still look like reference 01, the R5 stop condition applies.
   2. Generate specks from the recipe with home positions stored as fractions. Cloud specks use a Gaussian spread inside their ellipse, and field specks are uniform.
   3. Build the sprites per variant. Light uses warm brown (from `--ink` / reference 04) with larger, softer sizes. Dark uses pale near-white.
   4. Render loop: compose positions per the High-Level Technical Design and draw sprites. A resize only rescales (KTD1).
 - **Patterns to follow:** The existing `js/dust.js` IIFE and its per-canvas setup. The `js/grain.js` comment style.
 - **Test scenarios:**
-  - Covers AE5. On `index.html` at 1440×900, the three dark clouds and the bottom band sit where reference 01 shows them, and none overlaps the name.
+  - Covers AE5. On `index.html` at 1440×900, the three dark clouds sit where reference 01 shows them, and none overlaps the name.
   - At 390×844, the same layout scales down and no cloud reaches the name.
   - Left open for two minutes, each cloud stays within its sway and returns near its start, and the field keeps drifting and wrapping.
   - Resizing the window and switching DevTools between 1440 and 390 changes layout scale with no visible reshuffle.

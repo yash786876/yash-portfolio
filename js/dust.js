@@ -18,7 +18,6 @@
         { x: 0.53, y: 0.21, rx: 0.075, ry: 0.11, n: 1300, phone: { x: 0.84, y: 0.13 } }, // top centre
         { x: 0.75, y: 0.62, rx: 0.13, ry: 0.12, n: 2600 },  // middle right
         { x: 0.31, y: 0.80, rx: 0.1, ry: 0.085, n: 1700 },  // bottom left
-        { x: 0.45, y: 0.97, rx: 0.62, ry: 0.06, n: 2400 },  // settled band along the bottom
       ],
       nameZone: { desk: [0, 0.34, 0.18, 0.48], phone: [0, 0.72, 0.18, 0.48] },
     },
