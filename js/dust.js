@@ -90,19 +90,20 @@
     canvas.style.pointerEvents = "none";
     let w = canvas.clientWidth, h = canvas.clientHeight;
 
-    // Counts and the phone layout are fixed at load; a resize only rescales (no reshuffle).
-    const phone = w < PHONE;
+    // Speck counts are fixed at load; a resize only rescales (no reshuffle). The phone layout
+    // (cloud homes, name zone, push reach) is re-chosen only when a resize crosses PHONE.
+    let phone = w < PHONE;
     const scale = (w * h) / REF_AREA * (phone ? 0.6 : 1);
-    const zone = phone ? recipe.nameZone.phone : recipe.nameZone.desk;
+    let zone = phone ? recipe.nameZone.phone : recipe.nameZone.desk;
     const maxR = Math.max(recipe.field.r[1], recipe.speck.r[1]);
     const stamps = makeStamps(recipe.soft, maxR);
     const pick = (r) => stamps[Math.min(STAMP_STEPS - 1, Math.floor((r / maxR) * STAMP_STEPS))];
     const sized = ([lo, hi]) => lo + (hi - lo) * Math.random() ** 2; // mostly small, a few large
-    const reach = phone ? PUSH.rPhone : PUSH.r;
+    let reach = phone ? PUSH.rPhone : PUSH.r;
 
     const clouds = recipe.clouds.map((c) => {
       const home = (phone && c.phone) || c;
-      return { x: home.x, y: home.y, rx: c.rx, ry: c.ry, n: c.n,
+      return { x: home.x, y: home.y, desk: c, mobile: c.phone || c, rx: c.rx, ry: c.ry, n: c.n,
         px: rand(45, 90), py: rand(45, 90), ph: rand(0, TAU), ph2: rand(0, TAU) };
     });
 
@@ -115,9 +116,9 @@
     for (const c of clouds) {
       const n = Math.round(c.n * scale);
       for (let i = 0, tries = 0; i < n && tries < n * 20; tries++) {
-        const x = c.x + gauss() * c.rx / 2, y = c.y + gauss() * c.ry / 2;
-        if (y > 1 || inZone(x, y, zone, SWAY)) continue;
-        specks.push({ cloud: c, x, y, st: pick(sized(recipe.speck.r)), a: rand(...recipe.speck.a),
+        const gx = gauss() * c.rx / 2, gy = gauss() * c.ry / 2;   // offset from the cloud centre
+        if (c.y + gy > 1 || inZone(c.x + gx, c.y + gy, zone, SWAY)) continue;
+        specks.push({ cloud: c, gx, gy, hid: false, st: pick(sized(recipe.speck.r)), a: rand(...recipe.speck.a),
           ph: rand(0, TAU), f: rand(0.4, 1.1), ox: 0, oy: 0, vx: 0, vy: 0 });
         i++;
       }
@@ -128,8 +129,19 @@
     const [cr, cg, cb] = recipe.rgb;
     const clearPixel = new Uint32Array(new Uint8Array([cr, cg, cb, 0]).buffer)[0];
     let img, data, pixels, W, H;
+    // A rotation or resize across PHONE moves each cloud to that layout's home and hides any
+    // speck that would now sit in the name zone, so the clouds never cover the name.
+    const retier = () => {
+      if ((w < PHONE) === phone) return;
+      phone = w < PHONE;
+      zone = phone ? recipe.nameZone.phone : recipe.nameZone.desk;
+      reach = phone ? PUSH.rPhone : PUSH.r;
+      for (const c of clouds) { const home = phone ? c.mobile : c.desk; c.x = home.x; c.y = home.y; }
+      for (const p of specks) if (p.cloud) p.hid = inZone(p.cloud.x + p.gx, p.cloud.y + p.gy, zone, SWAY);
+    };
     const resize = () => {
       w = canvas.clientWidth; h = canvas.clientHeight;
+      retier();
       W = canvas.width = Math.max(1, Math.round(w)); H = canvas.height = Math.max(1, Math.round(h));
       img = ctx.createImageData(W, H); data = img.data; pixels = new Uint32Array(data.buffer);
     };
@@ -142,9 +154,10 @@
     // t: seconds of dust time; k: elapsed time in 60fps frames (0 for a still frame)
     const draw = (t, k = 0) => {
       pixels.fill(clearPixel);
+      // The nav is fixed to the viewport, so the fade under it follows the viewport too.
+      const b = canvas.getBoundingClientRect(), top = b.top;
       let mx = 0, my = 0, near = false;
       if (pointer && k) {
-        const b = canvas.getBoundingClientRect();
         mx = pointer.x - b.left; my = pointer.y - b.top;
         near = mx > -reach && my > -reach && mx < w + reach && my < h + reach;
       }
@@ -154,10 +167,11 @@
         c.sy = SWAY * Math.sin(TAU * t / c.py + c.ph2) * h;
       }
       for (const p of specks) {
+        if (p.hid) continue;
         let x, y;
         if (p.cloud) {
-          x = p.x * w + p.cloud.sx + Math.sin(t * p.f + p.ph) * 1.2;
-          y = p.y * h + p.cloud.sy + Math.cos(t * p.f * 0.8 + p.ph) * 1.2;
+          x = (p.cloud.x + p.gx) * w + p.cloud.sx + Math.sin(t * p.f + p.ph) * 1.2;
+          y = (p.cloud.y + p.gy) * h + p.cloud.sy + Math.cos(t * p.f * 0.8 + p.ph) * 1.2;
         } else {
           x = ((p.x * w + p.dx * t) % w + w) % w;
           y = ((p.y * h + p.dy * t) % h + h) % h;
@@ -178,8 +192,9 @@
           if (Math.abs(p.ox) + Math.abs(p.oy) + Math.abs(p.vx) + Math.abs(p.vy) < 0.01) p.ox = p.oy = p.vx = p.vy = 0;
         }
         x += p.ox; y += p.oy;
-        if (y < 0) continue;
-        const a = y < NAV_FADE ? p.a * y / NAV_FADE : p.a;
+        const vy = y + top;       // speck height in the viewport
+        if (y < 0 || vy < 0) continue;
+        const a = vy < NAV_FADE ? p.a * vy / NAV_FADE : p.a;
         const st = p.st;
         if (!st.k) {              // point speck: split across 4 pixels so slow drift stays smooth
           const fx = Math.floor(x), fy = Math.floor(y), tx = x - fx, ty = y - fy, v = a * st.s;
