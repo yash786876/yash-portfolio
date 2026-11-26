@@ -10,6 +10,10 @@ The frame every page of the portfolio sits inside: the shared fonts and colour t
 
 The rounded, dark-edged border drawn over every page to imitate an old film or TV frame. It has solid dark corners outside the curve, a dark rim band at the edge and a softer inward falloff, and it is thinner on phones. It sits above the page and the nav but never intercepts input. Its darkest point is deliberately kept toward the bottom corners so text in the top corners stays readable (see Contrast budget).
 
+## Dust cloud
+
+A denser patch of dust particles that sits in a fixed, composed spot over the thinner drifting dust on an intro screen, imitating dust caught in light. Clouds drift so slowly they barely move, keep away from the name, and specks pushed aside by the cursor ease back so each cloud keeps its shape. The dark and cream variants each have their own cloud layout taken from the reference.
+
 ## Contrast budget
 
 How much the grain and the film-frame vignette may darken the area behind a piece of text before that text falls below the project's minimum contrast ratio. The budget is set by the text colour: the closer a colour already sits to the minimum on a plain background, the less darkening it can tolerate. It is checked by measuring the rendered page, because the overlays are invisible to standard contrast tools. Changing overlay strength or a text colour spends or restores budget, so the two are always judged together.
