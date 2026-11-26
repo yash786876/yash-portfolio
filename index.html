@@ -8,11 +8,30 @@
   <link rel="preload" href="assets/fonts/outfit-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/tokens.css">
   <style>
-    /* Starter test page: proves the shell on a dark page. Replaced by features 3, 11, 12. */
+    /* Home: dust intro (Feature 3) -> hero (placeholder; Feature 11 adds the photo)
+       -> project grid (Feature 12, not built yet). */
+
+    /* Intro: the name glows in on load and fades as the intro scrolls away. */
     .intro { position: relative; height: 100vh; }
     .intro canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-    .intro h1 { position: absolute; left: var(--s4); top: 30vh; margin: 0; font-size: clamp(32px, 3.8vw, 96px); /* name ≈ 25% of viewport width on desktop */ font-weight: 600;
-      color: var(--ink-on-dark); text-shadow: 0 0 18px rgba(255,255,255,.45); }
+    .intro__title { position: absolute; left: var(--s4); top: 30vh; } /* scroll fade sets its opacity */
+    .intro h1 { margin: 0; font-size: clamp(32px, 3.8vw, 96px); /* name ≈ 25% of viewport width on desktop */ font-weight: 600;
+      color: var(--ink-on-dark); text-shadow: 0 0 18px rgba(255,255,255,.45);
+      animation: name-glow 1.5s ease-out .3s backwards; }
+    @keyframes name-glow {
+      from { opacity: 0; text-shadow: 0 0 0 rgba(255,255,255,0); }
+      to   { opacity: 1; text-shadow: 0 0 18px rgba(255,255,255,.45); }
+    }
+    @media (prefers-reduced-motion: reduce) { .intro h1 { animation: none; } }
+
+    /* Hero placeholder: Feature 11 replaces the content with the seated-person photo. */
+    .hero { position: relative; height: 100vh; background: var(--bg-dark); padding-top: 34vh; }
+    .hero__headline { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 var(--s4);
+      margin: 0; padding: 0 var(--s6); font-size: clamp(28px, 3.4vw, 64px); font-weight: 600;
+      line-height: var(--lh-tight); letter-spacing: -0.02em; color: var(--accent-dark); }
+    @media (max-width: 599px) {
+      .hero__headline { justify-content: flex-start; flex-direction: column; gap: var(--s1); padding: 0 var(--s3); }
+    }
   </style>
 </head>
 <body class="is-dark">
@@ -28,11 +47,35 @@
   <main>
     <section class="intro">
       <canvas data-dust="dark" aria-hidden="true"></canvas>
-      <h1>Yash Santwani</h1>
+      <div class="intro__title"><h1>Yash Santwani</h1></div>
+    </section>
+
+    <section class="hero hero--placeholder" aria-label="Introduction">
+      <h2 class="hero__headline">
+        <span>Building businesses,</span>
+        <span>then the tech</span>
+        <span>behind them</span>
+      </h2>
     </section>
   </main>
 
   <script src="js/grain.js" defer></script>
   <script src="js/dust.js" defer></script>
+  <script>
+    // Intro name fades as the intro scrolls away, and is gone before it reaches the nav.
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const title = document.querySelector(".intro__title"), nav = document.querySelector(".nav");
+      let queued = false;
+      const update = () => {
+        queued = false;
+        const distance = Math.max(1, title.offsetTop - nav.offsetHeight);
+        title.style.opacity = Math.max(0, Math.min(1, 1 - scrollY / distance));
+      };
+      const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+      addEventListener("scroll", queue, { passive: true });
+      addEventListener("resize", queue);
+      update();   // also right for a restored mid-page scroll position
+    }
+  </script>
 </body>
 </html>
