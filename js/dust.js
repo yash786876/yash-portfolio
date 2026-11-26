@@ -10,7 +10,7 @@
   // placed there, even at full sway, so the clouds can never cover the name.
   const RECIPES = {
     dark: {
-      rgb: "238,234,226",
+      rgb: [238, 234, 226],
       field: { n: 5200, r: [0.35, 1.5], a: [0.1, 0.5] },
       speck: { r: [0.35, 1.4], a: [0.2, 0.75] },
       soft: 0.45,
@@ -23,7 +23,7 @@
       nameZone: { desk: [0, 0.34, 0.18, 0.48], phone: [0, 0.72, 0.18, 0.48] },
     },
     light: {
-      rgb: "92,74,58",
+      rgb: [92, 74, 58],
       field: { n: 3600, r: [0.5, 2.6], a: [0.14, 0.5] },
       speck: { r: [0.5, 2.4], a: [0.2, 0.6] },
       soft: 0.7,                // out-of-focus look
@@ -36,8 +36,25 @@
 
   const SWAY = 0.022;           // cloud sway amplitude, fraction of the canvas
   const FIELD_DRIFT = [3, -1.8];   // thin-field drift, css px per second
-  const SPRITE_STEPS = 8;
+  const STAMP_STEPS = 8;
+  const NAV_FADE = 64;          // css px: dust fades out under the nav so its text keeps 4.5:1
+  const PUSH = { r: 90, rPhone: 70, force: 0.22, stiff: 0.012, damp: 0.88 }; // per 60fps frame
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Cursor or finger position in viewport coords, or null. Listened for on window (passive)
+  // so the dust never sits in the way of clicks, and touch keeps reporting while the page scrolls.
+  let pointer = null;
+  if (!reduce) {
+    const set = (x, y) => { pointer = { x, y }; };
+    const clear = () => { pointer = null; };
+    addEventListener("pointermove", (e) => { if (e.pointerType !== "touch") set(e.clientX, e.clientY); }, { passive: true });
+    addEventListener("touchstart", (e) => set(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+    addEventListener("touchmove", (e) => set(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+    addEventListener("touchend", clear, { passive: true });
+    addEventListener("touchcancel", clear, { passive: true });
+    document.documentElement.addEventListener("mouseleave", clear);
+    addEventListener("blur", clear);
+  }
 
   const rand = (lo, hi) => lo + Math.random() * (hi - lo);
   const gauss = () => {        // standard normal, redrawn beyond ±2.5 so clouds fade out softly
@@ -49,25 +66,27 @@
   };
   const inZone = (x, y, z, m) => x > z[0] - m && x < z[1] + m && y > z[2] - m && y < z[3] + m;
 
-  // Round speck sprites at a few sizes; soft edges come from the gradient, not a blur filter.
-  const makeSprites = (rgb, soft, maxR, dpr) => Array.from({ length: SPRITE_STEPS }, (_, i) => {
-    const r = maxR * (i + 1) / SPRITE_STEPS;
-    const px = Math.ceil(r * 2 * dpr) + 2;
-    const c = document.createElement("canvas");
-    c.width = c.height = px;
-    const g = c.getContext("2d");
-    const grad = g.createRadialGradient(px / 2, px / 2, 0, px / 2, px / 2, r * dpr);
-    grad.addColorStop(0, `rgba(${rgb},1)`);
-    grad.addColorStop(Math.max(0.01, 1 - soft), `rgba(${rgb},1)`);
-    grad.addColorStop(1, `rgba(${rgb},0)`);
-    g.fillStyle = grad; g.fillRect(0, 0, px, px);
-    return { c, size: px / dpr };
+  // Round speck stamps at a few sizes, as alpha kernels with a soft edge. Specks are stamped
+  // into one pixel buffer per frame (one canvas call), which keeps thousands of specks cheap.
+  const makeStamps = (soft, maxR) => Array.from({ length: STAMP_STEPS }, (_, i) => {
+    const r = maxR * (i + 1) / STAMP_STEPS;
+    if (r < 0.8) return { k: 0, s: Math.min(1, 4 * r * r) };  // a single point, spread over 4 pixels
+    const k = Math.ceil(2 * r) + 1, c = k / 2, inner = 1 - soft, a = new Float32Array(k * k);
+    for (let y = 0; y < k; y++) for (let x = 0; x < k; x++) {
+      let cover = 0;              // 4x4 supersampled coverage of the soft disc
+      for (let sy = 0.125; sy < 1; sy += 0.25) for (let sx = 0.125; sx < 1; sx += 0.25) {
+        const d = Math.hypot(x + sx - c, y + sy - c) / r;
+        cover += d <= inner ? 1 : d < 1 ? (1 - d) / soft : 0;
+      }
+      a[y * k + x] = cover / 16;
+    }
+    return { k, a };
   });
 
   document.querySelectorAll("canvas[data-dust]").forEach((canvas) => {
     const recipe = canvas.dataset.dust === "light" ? RECIPES.light : RECIPES.dark;
     const ctx = canvas.getContext("2d");
-    const dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.style.pointerEvents = "none";
     let w = canvas.clientWidth, h = canvas.clientHeight;
 
     // Counts and the phone layout are fixed at load; a resize only rescales (no reshuffle).
@@ -75,9 +94,10 @@
     const scale = (w * h) / REF_AREA * (phone ? 0.6 : 1);
     const zone = phone ? recipe.nameZone.phone : recipe.nameZone.desk;
     const maxR = Math.max(recipe.field.r[1], recipe.speck.r[1]);
-    const sprites = makeSprites(recipe.rgb, recipe.soft, maxR, dpr);
-    const pick = (r) => sprites[Math.min(SPRITE_STEPS - 1, Math.floor((r / maxR) * SPRITE_STEPS))];
+    const stamps = makeStamps(recipe.soft, maxR);
+    const pick = (r) => stamps[Math.min(STAMP_STEPS - 1, Math.floor((r / maxR) * STAMP_STEPS))];
     const sized = ([lo, hi]) => lo + (hi - lo) * Math.random() ** 2; // mostly small, a few large
+    const reach = phone ? PUSH.rPhone : PUSH.r;
 
     const clouds = recipe.clouds.map((c) => {
       const home = phone && c.phone ? { ...c, ...c.phone } : c;
@@ -87,29 +107,46 @@
 
     const specks = [];
     for (let i = 0; i < Math.round(recipe.field.n * scale); i++) {
-      const r = sized(recipe.field.r);
-      specks.push({ cloud: null, x: Math.random(), y: Math.random(), r, s: pick(r),
-        a: rand(...recipe.field.a), vx: FIELD_DRIFT[0] * rand(0.6, 1.4), vy: FIELD_DRIFT[1] * rand(0.6, 1.4) });
+      specks.push({ cloud: null, x: Math.random(), y: Math.random(), st: pick(sized(recipe.field.r)),
+        a: rand(...recipe.field.a), dx: FIELD_DRIFT[0] * rand(0.6, 1.4), dy: FIELD_DRIFT[1] * rand(0.6, 1.4),
+        ox: 0, oy: 0, vx: 0, vy: 0 });
     }
     for (const c of clouds) {
       const n = Math.round(c.n * scale);
       for (let i = 0, tries = 0; i < n && tries < n * 20; tries++) {
         const x = c.x + gauss() * c.rx / 2, y = c.y + gauss() * c.ry / 2;
         if (y > 1 || inZone(x, y, zone, SWAY)) continue;
-        const r = sized(recipe.speck.r);
-        specks.push({ cloud: c, x, y, r, s: pick(r), a: rand(...recipe.speck.a), ph: rand(0, TAU), f: rand(0.4, 1.1) });
+        specks.push({ cloud: c, x, y, st: pick(sized(recipe.speck.r)), a: rand(...recipe.speck.a),
+          ph: rand(0, TAU), f: rand(0.4, 1.1), ox: 0, oy: 0, vx: 0, vy: 0 });
         i++;
       }
     }
 
+    // The buffer is at css-pixel resolution: the dust is soft, and this keeps each frame cheap.
+    let img, data, W, H;
     const resize = () => {
       w = canvas.clientWidth; h = canvas.clientHeight;
-      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      W = canvas.width = Math.max(1, Math.round(w)); H = canvas.height = Math.max(1, Math.round(h));
+      img = ctx.createImageData(W, H); data = img.data;
+      const [r, g, b] = recipe.rgb;
+      for (let i = 0; i < data.length; i += 4) { data[i] = r; data[i + 1] = g; data[i + 2] = b; }
+    };
+    const add = (px, py, v) => {  // composite v (0..1) of the dust colour over pixel (px, py)
+      if (px < 0 || py < 0 || px >= W || py >= H) return;
+      const i = (py * W + px) * 4 + 3, o = data[i];
+      data[i] = o + v * (255 - o);
     };
 
-    const draw = (t) => {         // t in seconds
-      ctx.clearRect(0, 0, w, h);
+    // t: seconds of dust time; k: elapsed time in 60fps frames (0 for a still frame)
+    const draw = (t, k = 0) => {
+      for (let i = 3; i < data.length; i += 4) data[i] = 0;
+      let mx = 0, my = 0, near = false;
+      if (pointer && k) {
+        const b = canvas.getBoundingClientRect();
+        mx = pointer.x - b.left; my = pointer.y - b.top;
+        near = mx > -reach && my > -reach && mx < w + reach && my < h + reach;
+      }
+      const damp = PUSH.damp ** k;
       for (const c of clouds) {
         c.sx = SWAY * Math.sin(TAU * t / c.px + c.ph) * w;
         c.sy = SWAY * Math.sin(TAU * t / c.py + c.ph2) * h;
@@ -120,19 +157,58 @@
           x = p.x * w + p.cloud.sx + Math.sin(t * p.f + p.ph) * 1.2;
           y = p.y * h + p.cloud.sy + Math.cos(t * p.f * 0.8 + p.ph) * 1.2;
         } else {
-          x = ((p.x * w + p.vx * t) % w + w) % w;
-          y = ((p.y * h + p.vy * t) % h + h) % h;
+          x = ((p.x * w + p.dx * t) % w + w) % w;
+          y = ((p.y * h + p.dy * t) % h + h) % h;
         }
-        ctx.globalAlpha = p.a;
-        ctx.drawImage(p.s.c, x - p.s.size / 2, y - p.s.size / 2, p.s.size, p.s.size);
+        // Push: a force away from the pointer moves an offset that springs back to zero.
+        if (near) {
+          const ex = x + p.ox - mx, ey = y + p.oy - my, d2 = ex * ex + ey * ey;
+          if (d2 < reach * reach) {
+            const d = Math.sqrt(d2) || 1, f = (1 - d / reach) * PUSH.force * k;
+            p.vx += ex / d * f; p.vy += ey / d * f;
+          }
+        }
+        if (k && (p.ox || p.oy || p.vx || p.vy)) {
+          p.vx = (p.vx - p.ox * PUSH.stiff * k) * damp;
+          p.vy = (p.vy - p.oy * PUSH.stiff * k) * damp;
+          p.ox += p.vx * k; p.oy += p.vy * k;
+          if (Math.abs(p.ox) + Math.abs(p.oy) + Math.abs(p.vx) + Math.abs(p.vy) < 0.01) p.ox = p.oy = p.vx = p.vy = 0;
+        }
+        x += p.ox; y += p.oy;
+        if (y < 0) continue;
+        const a = y < NAV_FADE ? p.a * y / NAV_FADE : p.a;
+        const st = p.st;
+        if (!st.k) {              // point speck: split across 4 pixels so slow drift stays smooth
+          const fx = Math.floor(x), fy = Math.floor(y), tx = x - fx, ty = y - fy, v = a * st.s;
+          add(fx, fy, v * (1 - tx) * (1 - ty)); add(fx + 1, fy, v * tx * (1 - ty));
+          add(fx, fy + 1, v * (1 - tx) * ty); add(fx + 1, fy + 1, v * tx * ty);
+        } else {
+          const x0 = Math.round(x - st.k / 2), y0 = Math.round(y - st.k / 2);
+          for (let j = 0; j < st.k; j++) for (let i = 0; i < st.k; i++) add(x0 + i, y0 + j, a * st.a[j * st.k + i]);
+        }
       }
-      ctx.globalAlpha = 1;
+      ctx.putImageData(img, 0, 0);
     };
-
-    const frame = (now) => { draw(now / 1000); requestAnimationFrame(frame); };
 
     resize();
     addEventListener("resize", () => { resize(); if (reduce) draw(0); });
-    if (reduce) draw(0); else requestAnimationFrame(frame);
+    if (reduce) { draw(0); return; }   // still frame: clouds at home, no push, no loop
+
+    // Run only while the dust is on screen and the tab is visible. Dust time advances by
+    // clamped steps, so a resumed loop carries on where it stopped instead of jumping.
+    let t = 0, last = 0, raf = 0, onScreen = false;
+    const frame = (now) => {
+      const dt = last ? Math.min((now - last) / 1000, 0.05) : 0;
+      last = now; t += dt;
+      draw(t, dt * 60);
+      raf = requestAnimationFrame(frame);
+    };
+    const update = () => {
+      const run = onScreen && !document.hidden;
+      if (run && !raf) { last = 0; raf = requestAnimationFrame(frame); }
+      if (!run && raf) { cancelAnimationFrame(raf); raf = 0; }
+    };
+    new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; update(); }).observe(canvas);
+    document.addEventListener("visibilitychange", update);
   });
 })();
