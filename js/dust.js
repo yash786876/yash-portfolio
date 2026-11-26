@@ -48,8 +48,9 @@
     const set = (x, y) => { pointer = { x, y }; };
     const clear = () => { pointer = null; };
     addEventListener("pointermove", (e) => { if (e.pointerType !== "touch") set(e.clientX, e.clientY); }, { passive: true });
-    addEventListener("touchstart", (e) => set(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
-    addEventListener("touchmove", (e) => set(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+    const touch = (e) => set(e.touches[0].clientX, e.touches[0].clientY);
+    addEventListener("touchstart", touch, { passive: true });
+    addEventListener("touchmove", touch, { passive: true });
     addEventListener("touchend", clear, { passive: true });
     addEventListener("touchcancel", clear, { passive: true });
     document.documentElement.addEventListener("mouseleave", clear);
@@ -100,7 +101,7 @@
     const reach = phone ? PUSH.rPhone : PUSH.r;
 
     const clouds = recipe.clouds.map((c) => {
-      const home = phone && c.phone ? { ...c, ...c.phone } : c;
+      const home = (phone && c.phone) || c;
       return { x: home.x, y: home.y, rx: c.rx, ry: c.ry, n: c.n,
         px: rand(45, 90), py: rand(45, 90), ph: rand(0, TAU), ph2: rand(0, TAU) };
     });
@@ -123,13 +124,14 @@
     }
 
     // The buffer is at css-pixel resolution: the dust is soft, and this keeps each frame cheap.
-    let img, data, W, H;
+    // Each frame starts from the dust colour at zero alpha, written as whole pixels in one call.
+    const [cr, cg, cb] = recipe.rgb;
+    const clearPixel = new Uint32Array(new Uint8Array([cr, cg, cb, 0]).buffer)[0];
+    let img, data, pixels, W, H;
     const resize = () => {
       w = canvas.clientWidth; h = canvas.clientHeight;
       W = canvas.width = Math.max(1, Math.round(w)); H = canvas.height = Math.max(1, Math.round(h));
-      img = ctx.createImageData(W, H); data = img.data;
-      const [r, g, b] = recipe.rgb;
-      for (let i = 0; i < data.length; i += 4) { data[i] = r; data[i + 1] = g; data[i + 2] = b; }
+      img = ctx.createImageData(W, H); data = img.data; pixels = new Uint32Array(data.buffer);
     };
     const add = (px, py, v) => {  // composite v (0..1) of the dust colour over pixel (px, py)
       if (px < 0 || py < 0 || px >= W || py >= H) return;
@@ -139,7 +141,7 @@
 
     // t: seconds of dust time; k: elapsed time in 60fps frames (0 for a still frame)
     const draw = (t, k = 0) => {
-      for (let i = 3; i < data.length; i += 4) data[i] = 0;
+      pixels.fill(clearPixel);
       let mx = 0, my = 0, near = false;
       if (pointer && k) {
         const b = canvas.getBoundingClientRect();
@@ -162,7 +164,8 @@
         }
         // Push: a force away from the pointer moves an offset that springs back to zero.
         if (near) {
-          const ex = x + p.ox - mx, ey = y + p.oy - my, d2 = ex * ex + ey * ey;
+          const ex = x + p.ox - mx, ey = y + p.oy - my;
+          const d2 = Math.abs(ex) < reach && Math.abs(ey) < reach ? ex * ex + ey * ey : Infinity;
           if (d2 < reach * reach) {
             const d = Math.sqrt(d2) || 1, f = (1 - d / reach) * PUSH.force * k;
             p.vx += ex / d * f; p.vy += ey / d * f;
