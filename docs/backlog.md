@@ -3,8 +3,8 @@
 Build in order. Shared effects first so later pages reuse them. One loop per row.
 
 - [x] 1. **Global shell** — tokens, fonts, tiny nav, grain + vignette
-- [ ] 2. **Dust canvas** — drifting particles, dark + cream variants
-- [ ] 3. **Intro screen** — name glowing over dust, fades into the page
+- [x] 2. **Dust canvas** — drifting particles, dark + cream variants
+- [x] 3. **Intro screen** — name glowing over dust, fades into the page
 - [ ] 4. **About: split layout** — fixed portrait left (photo + dotted half), scrolling right column
 - [ ] 5. **About: hero** — giant rust headline + short bio
 - [ ] 6. **Scroll reveal** — ink-blot → sharp text (`js/reveal.js`)
