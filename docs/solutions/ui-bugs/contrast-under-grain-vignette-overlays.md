@@ -1,7 +1,7 @@
 ---
 title: Text contrast under grain and vignette overlays can't be checked with DevTools or Lighthouse
 date: 2026-11-25
-last_updated: 2026-11-26
+last_updated: 2026-11-27
 category: ui-bugs
 module: global shell (grain, vignette, nav)
 problem_type: ui_bug
@@ -64,10 +64,10 @@ Sanity check: on plain cream with both overlays hidden this read 4.76:1, against
 
 **Fixes that kept the look and passed (current values):**
 - **Shift the corner darkness toward the bottom.** The corner shade is a radial gradient centred high: `ellipse 130% 120% at 50% 26%` (`js/grain.js:48`). The bottom corners get the full shade and the top corners, where the nav sits, get less. The user chose this over "all four corners dark".
-- **Use a separate dimmed-nav token, not opacity, and no lighter than needed.** `--ink-dim: #433E39` (`css/tokens.css:50`) is used only for dimmed nav links on cream. The original `--ink-soft` at about 4.8:1 on plain cream had only about 7% darkening headroom, and the old `opacity: .6` gave about 3.4:1 even without any overlay.
+- **Use a separate dimmed-nav token, not opacity, and no lighter than needed.** `--ink-dim` (`css/tokens.css:50`, `#433E39` at the time, `#3C3732` since Feature 4) is used only for dimmed nav links on cream. The original `--ink-soft` at about 4.8:1 on plain cream had only about 7% darkening headroom, and the old `opacity: .6` gave about 3.4:1 even without any overlay.
 - **Darken the small label token slightly:** `--ink-soft: #554E47` (`css/tokens.css:49`) keeps the "01" section label near the right edge at 4.66:1.
 - Results at the viewports measured then: cream desktop "Contacts" 4.82:1 and "Portfolio," 5.03:1; phone nav 5.1:1 or better; dark page dimmed "Contacts" 4.75:1.
-- **Not a true worst case (found 2026-11-26).** The vignette's corner shade scales with the viewport, so a short window pulls the darker region closer to the nav. At 1257×540 (a laptop window with the browser chrome showing), cream "Contacts" on `about.html` measures **4.47:1** — below 4.5 — with the dust canvas hidden, so it is the shell, not the dust. Still open: it needs a vignette or `--ink-dim` adjustment and a re-measure at short heights.
+- **Not a true worst case (found 2026-11-26).** The vignette's corner shade scales with the viewport, so a short window pulls the darker region closer to the nav. At 1257×540 (a laptop window with the browser chrome showing), cream "Contacts" on `about.html` measures **4.47:1** — below 4.5 — with the dust canvas hidden, so it is the shell, not the dust. Fixed 2026-11-27 (Feature 4): `--ink-dim` darkened to `#3C3732`, giving 4.90:1 at a 1257×588 window (4.48:1 there before the change).
 
 ## Why This Works
 Multiply grain and dark vignette shading darken the text *and* the background behind it. With dark text on a light background, contrast falls as both get darker. The budget is set by how dark the background can get: for dark ink with luminance L1 the background must stay at or above 4.5·(L1+0.05) − 0.05. For #5A524A that is luminance 0.567, only about 7% below plain cream (0.612). Each step darker on the dimmed token buys real headroom. Moving the shade's centre up keeps the corners that hold text inside the budget, and the reference's heavy-corner feel survives at the bottom.

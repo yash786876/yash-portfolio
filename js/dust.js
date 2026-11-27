@@ -1,5 +1,6 @@
 // Dust hanging in the air: composed cloud patches over a thin drifting field.
-// Usage: <canvas data-dust="dark"></canvas> (light specks on dark) or data-dust="light" (brown on cream).
+// Usage: <canvas data-dust="dark"></canvas> (light specks on dark), data-dust="light" (brown on cream)
+// or data-dust="warm" (soft cream specks on a warm dark panel, e.g. the About portrait side).
 (() => {
   const TAU = Math.PI * 2;
   const PHONE = 600;            // canvas width below which the phone name zone and density apply
@@ -30,6 +31,17 @@
         { x: 0.47, y: 0.5, rx: 0.2, ry: 0.8, n: 6500 },  // dense band down the middle
       ],
       nameZone: { desk: [0, 0.29, 0.18, 0.48], phone: [0, 0.72, 0.18, 0.48] },
+    },
+    warm: {
+      rgb: [236, 222, 198],
+      field: { n: 2600, r: [0.5, 2.4], a: [0.08, 0.38] },
+      speck: { r: [0.5, 2.2], a: [0.14, 0.5] },
+      soft: 0.65,               // out of focus, like dust caught in warm light
+      clouds: [
+        { x: 0.68, y: 0.3, rx: 0.3, ry: 0.22, n: 2200 },  // light falling from upper right
+        { x: 0.3, y: 0.78, rx: 0.26, ry: 0.16, n: 1300 },
+      ],
+      nameZone: null,           // no text over this panel (the nav already gets the top fade)
     },
   };
 
@@ -64,7 +76,7 @@
       if (Math.abs(g) <= 2.5) return g;
     }
   };
-  const inZone = (x, y, z, m) => x > z[0] - m && x < z[1] + m && y > z[2] - m && y < z[3] + m;
+  const inZone = (x, y, z, m) => !!z && x > z[0] - m && x < z[1] + m && y > z[2] - m && y < z[3] + m;
 
   // Round speck stamps at a few sizes, as alpha kernels with a soft edge. Specks are stamped
   // into one pixel buffer per frame (one canvas call), which keeps thousands of specks cheap.
@@ -84,7 +96,7 @@
   });
 
   document.querySelectorAll("canvas[data-dust]").forEach((canvas) => {
-    const recipe = canvas.dataset.dust === "light" ? RECIPES.light : RECIPES.dark;
+    const recipe = RECIPES[canvas.dataset.dust] || RECIPES.dark;
     const ctx = canvas.getContext("2d");
     canvas.style.pointerEvents = "none";
     let w = canvas.clientWidth, h = canvas.clientHeight;
@@ -93,7 +105,7 @@
     // (cloud homes, name zone, push reach) is re-chosen only when a resize crosses PHONE.
     let phone = w < PHONE;
     const scale = (w * h) / REF_AREA * (phone ? 0.6 : 1);
-    let zone = phone ? recipe.nameZone.phone : recipe.nameZone.desk;
+    let zone = recipe.nameZone && (phone ? recipe.nameZone.phone : recipe.nameZone.desk);
     const maxR = Math.max(recipe.field.r[1], recipe.speck.r[1]);
     const stamps = makeStamps(recipe.soft, maxR);
     const pick = (r) => stamps[Math.min(STAMP_STEPS - 1, Math.floor((r / maxR) * STAMP_STEPS))];
@@ -133,7 +145,7 @@
     const retier = () => {
       if ((w < PHONE) === phone) return;
       phone = w < PHONE;
-      zone = phone ? recipe.nameZone.phone : recipe.nameZone.desk;
+      zone = recipe.nameZone && (phone ? recipe.nameZone.phone : recipe.nameZone.desk);
       reach = phone ? PUSH.rPhone : PUSH.r;
       for (const c of clouds) { const home = phone ? c.mobile : c.desk; c.x = home.x; c.y = home.y; }
       for (const p of specks) if (p.cloud) p.hid = inZone(p.cloud.x + p.gx, p.cloud.y + p.gy, zone, SWAY);

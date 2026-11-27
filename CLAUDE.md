@@ -24,7 +24,7 @@ Goal: recreate the *feel* with Yash's own content — never copy text, images or
 
 ## Signature effects (reuse, don't rebuild)
 - `js/grain.js` — film grain overlay + vignette on every page
-- `js/dust.js` — drifting particles on canvas (`data-dust="dark|light"`)
+- `js/dust.js` — drifting particles on canvas (`data-dust="dark|light|warm"`)
 - `js/reveal.js` — ink-blot → sharp text reveal (`data-reveal`)
 - `js/counter.js` — count-up numbers (`data-count="50" data-suffix="+"`)
 

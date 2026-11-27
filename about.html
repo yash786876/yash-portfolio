@@ -8,14 +8,46 @@
   <link rel="preload" href="assets/fonts/outfit-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/tokens.css">
   <style>
-    /* Stub: proves the shell on a cream page. Feature 4 replaces the body with the
-       split layout and gives the nav name a light colour over the portrait.
-       The cream dust section is a demo; the About intro feature replaces it. */
-    .dust-demo { position: relative; height: 100vh; }
-    .dust-demo canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-    .demo { padding: var(--s16) var(--s4); max-width: 900px; margin-left: auto; }
-    .numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--s6); }
-    .numbers p { margin: var(--s1) 0 0; font-size: var(--fs-small); color: var(--ink-soft); }
+    /* About = split layout (Feature 4). Left: fixed warm-dark panel with dust and a
+       portrait slot. Right: cream column that scrolls, holding sections 01–04.
+       Feature 5 adds the headline + bio at the top of the column; Features 7–10 fill
+       the sections. Below 900px the panel stacks on top and scrolls away. */
+
+    /* Nav: light name over the dark panel, ink links over the cream column. */
+    body { --nav-name: var(--ink-on-dark); }
+
+    .about { display: grid; grid-template-columns: 1fr 1fr; }
+
+    .about__panel { position: sticky; top: 0; height: 100vh; overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 55% at 75% 20%, rgba(214, 142, 64, .18), transparent 70%),
+        linear-gradient(160deg, #2b221b, #171310 75%); }
+    .about__panel canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+    /* Portrait slot (empty until assets/img/portrait.webp exists). Expected later:
+         <img class="about__photo" src="assets/img/portrait.webp" alt="Portrait of Yash Santwani">
+       filling the panel (object-fit: cover), with its right half rendered as a dotted
+       stipple over the dust. Kept above the dust, below the nav and overlays. */
+    .about__portrait { position: absolute; inset: 0; }
+
+    .about__content { padding: 0 var(--s6) var(--s16); }
+    .about__lead { min-height: 70vh; }  /* reserved for Feature 5: headline + bio */
+    .about__section { min-height: 60vh; }
+    .section-head h2 { margin: 0; font: inherit; }  /* label keeps the small section-head style */
+
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+    @media (max-width: 899px) {
+      .about { grid-template-columns: 1fr; }
+      .about__panel { position: relative; height: 65vh; }
+      .about__content { padding: 0 var(--s3) var(--s12); }
+      .about__lead { min-height: 30vh; }
+      .about__section { min-height: 40vh; }
+      /* The whole nav sits over the dark panel at first, then over cream. */
+      body.nav-on-dark { --nav-link: var(--ink-on-dark); --nav-link-dim: var(--ink-soft-on-dark); }
+      body:not(.nav-on-dark) { --nav-name: var(--ink); }
+    }
   </style>
 </head>
 <body>
@@ -28,24 +60,42 @@
     </span>
   </nav>
 
-  <main>
-    <section class="dust-demo">
-      <canvas data-dust="light" aria-hidden="true"></canvas>
-    </section>
-    <section class="demo">
-      <h1 class="display" data-reveal>Making the complex clear</h1>
-      <div class="section-head" style="margin-top: var(--s12)"><span>Numbers</span><span>01</span></div>
-      <div class="numbers">
-        <div><span class="big-number" data-count="3" data-suffix="+">0</span><p>placeholder label</p></div>
-        <div><span class="big-number" data-count="10" data-suffix="+">0</span><p>placeholder label</p></div>
-        <div><span class="big-number" data-count="5">0</span><p>placeholder label</p></div>
-      </div>
-    </section>
+  <main class="about">
+    <div class="about__panel" aria-hidden="true">
+      <canvas data-dust="warm"></canvas>
+      <div class="about__portrait"></div>
+    </div>
+
+    <div class="about__content">
+      <h1 class="sr-only">About Yash Santwani</h1>
+      <div class="about__lead"></div>
+
+      <section class="about__section" aria-labelledby="s-numbers">
+        <div class="section-head"><h2 id="s-numbers">Numbers</h2><span>01</span></div>
+      </section>
+      <section class="about__section" aria-labelledby="s-what">
+        <div class="section-head"><h2 id="s-what">What I do</h2><span>02</span></div>
+      </section>
+      <section class="about__section" aria-labelledby="s-industries">
+        <div class="section-head"><h2 id="s-industries">Industries</h2><span>03</span></div>
+      </section>
+      <section class="about__section" aria-labelledby="s-values">
+        <div class="section-head"><h2 id="s-values">What matters to me</h2><span>04</span></div>
+      </section>
+    </div>
   </main>
 
   <script src="js/grain.js" defer></script>
   <script src="js/dust.js" defer></script>
-  <script src="js/reveal.js" defer></script>
-  <script src="js/counter.js" defer></script>
+  <script>
+    // Phones: the nav is light while it sits over the dark panel, ink once cream reaches it.
+    const panel = document.querySelector(".about__panel"), nav = document.querySelector(".nav");
+    const stacked = matchMedia("(max-width: 899px)");
+    const navTone = () => document.body.classList.toggle("nav-on-dark",
+      stacked.matches && panel.getBoundingClientRect().bottom > nav.offsetHeight / 2);
+    addEventListener("scroll", navTone, { passive: true });
+    addEventListener("resize", navTone);
+    navTone();
+  </script>
 </body>
 </html>
