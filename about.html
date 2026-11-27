@@ -31,12 +31,14 @@
     .about__portrait { position: absolute; inset: 0; }
 
     .about__content { padding: 0 var(--gutter) var(--s16); }
-    /* Hero (Feature 5): rust headline sized to fit the column in two lines, bio as a
-       narrow block against the column's right edge. */
+    /* Hero (Feature 5): giant rust headline (~120px at 1440, like reference 05) that starts
+       left of the centre line and runs over the panel edge; bio as a narrow block against
+       the column's right edge. */
     .about__lead { min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
       padding: var(--s12) 0 var(--s6); }
-    .about__headline { margin: 0; font-size: clamp(34px, 3.8vw, 76px); font-weight: 600;
-      line-height: var(--lh-tight); letter-spacing: -0.02em; color: var(--accent); text-wrap: balance; }
+    .about__headline { position: relative; z-index: 1; /* above the panel it overlaps */
+      margin: 0 0 0 calc(-8vw - var(--gutter)); font-size: clamp(56px, 8.33vw, 140px); font-weight: 600;
+      line-height: var(--lh-tight); letter-spacing: -0.02em; color: var(--accent); white-space: nowrap; }
     .about__bio { max-width: 22rem; margin: var(--s6) 0 0 auto; font-size: 15px; line-height: var(--lh-body);
       color: var(--ink); }
     .about__section { min-height: 60vh; }
@@ -48,8 +50,7 @@
       .about__panel { position: relative; height: 65vh; }
       .about__content { padding: 0 var(--s3) var(--s12); }
       .about__lead { min-height: 0; padding: var(--s8) 0 var(--s6); }
-      .about__headline { font-size: clamp(34px, 9vw, 64px); }
-      .about__headline br { display: none; }  /* let the browser balance the lines */
+      .about__headline { margin-left: 0; font-size: clamp(48px, 15vw, 96px); }
       .about__bio { max-width: none; margin-left: 0; }
       .about__section { min-height: 40vh; }
       /* The whole nav sits over the dark panel at first, then over cream. */
@@ -76,7 +77,7 @@
 
     <div class="about__content">
       <header class="about__lead">
-        <h1 class="about__headline">Building businesses,<br> then the tech behind them</h1>
+        <h1 class="about__headline">Clear plans,<br>real builds</h1>
         <p class="about__bio">I'm a founder and business technologist. I started Shubhrashi, a spice brand under Malava Food Industries, worked as a Business Technology Associate at ZS, and now study at Masters' Union while working with MU Ventures. I turn messy business problems into clear plans — and build the AI tools to run them.</p>
       </header>
 
