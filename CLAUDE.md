@@ -15,8 +15,10 @@ Goal: recreate the *feel* with Yash's own content — never copy text, images or
 - Deploy: GitHub Pages (main branch, root).
 
 ## Design tokens (source of truth: css/tokens.css)
-- Background cream `#D9CCB4` · ink `#1E1B18` · accent rust `#B5452A`
-- Dark pages `#1F1F1F` · dark-page headline yellow `#F2D46B`
+- Background cream `#D9CCB4` · ink `#1D1915` · accent rust `#B5401E`
+- Dark pages `#1F1F1F` · dark-page headline yellow `#F1DA75`
+- `--ink-dim` ink at 60% · `--rule` ink at 20% · `--surface` bg at 82% · `--ease` `cubic-bezier(.25, 1, .5, 1)` · margins/gutter `2.4rem` (`--gutter`)
+- Dimmed nav links use the solid `--ink-nav-dim` (`#3C3732`), not `--ink-dim`: 60% ink fails 4.5:1 under the vignette
 - Headings: geometric rounded sans — "Outfit" (free stand-in for TT Norms Pro), weight 600
 - Accent serif: "Fraunces" for small details only
 - Display sizes: clamp(64px, 11vw, 160px); body 15–16px, line-height 1.5

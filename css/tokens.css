@@ -45,20 +45,22 @@
 :root {
   /* colour */
   --bg: #D9CCB4;          /* warm cream */
-  --ink: #1E1B18;         /* near-black text */
+  --ink: #1D1915;         /* near-black text */
   --ink-soft: #554E47;    /* labels, captions — ≥ 4.5:1 on cream even under the vignette */
-  --ink-dim: #3C3732;    /* dimmed nav links on cream — keeps ≥ 4.5:1 under the vignette */
-  --accent: #B5452A;      /* rust — headlines + numbers only */
-  --rule: rgba(30, 27, 24, 0.18);
+  --ink-dim: rgba(29, 25, 21, 0.6);   /* ink at 60% — secondary text; NOT for nav (fails 4.5:1 under the vignette) */
+  --ink-nav-dim: #3C3732; /* solid dimmed nav links on cream — keeps ≥ 4.5:1 under the vignette */
+  --accent: #B5401E;      /* rust — headlines + numbers only */
+  --rule: rgba(29, 25, 21, 0.2);   /* ink at 20% */
+  --surface: rgba(217, 204, 180, 0.82); /* bg at 82% */
   --bg-dark: #1F1F1F;     /* home / intro */
   --ink-on-dark: #F1ECE2;
-  --accent-dark: #F2D46B; /* yellow headline on dark */
+  --accent-dark: #F1DA75; /* yellow headline on dark */
   --ink-soft-on-dark: #A39E95; /* dimmed text on dark, ≥ 4.5:1 on --bg-dark */
 
   /* nav — pages override per theme or per region (name vs links) */
   --nav-name: var(--ink);
   --nav-link: var(--ink);
-  --nav-link-dim: var(--ink-dim);
+  --nav-link-dim: var(--ink-nav-dim);
 
   /* type */
   --font-sans: "Outfit", "Outfit Fallback", system-ui, sans-serif;
@@ -73,9 +75,10 @@
 
   /* space (8-pt) */
   --s1: 8px; --s2: 16px; --s3: 24px; --s4: 32px; --s6: 48px; --s8: 64px; --s12: 96px; --s16: 128px;
+  --gutter: 2.4rem;       /* page side margins / gutter */
 
   /* motion */
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease: cubic-bezier(.25, 1, .5, 1);
   --dur: 900ms;
 }
 
@@ -115,7 +118,7 @@ body.is-dark {
 .nav {
   position: fixed; inset: 0 0 auto 0; z-index: 50;
   display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2);
-  padding: var(--s2) var(--s3);
+  padding: var(--s2) var(--gutter);
   font-size: 14px; line-height: 1.2; white-space: nowrap;
 }
 .nav a { text-decoration: none; border-radius: 2px; }
