@@ -13,6 +13,7 @@ Build in order. Shared effects first so later pages reuse them. One loop per row
 - [ ] 9. **03 Industries** — Food & agro / Spices / Recycling / Healthcare / Travel / Consumer / VC
 - [ ] 10. **04 What matters to me** — 3 values
 - [ ] 11. **Home hero** — full-screen moody photo, headline spread across
+  - Feature 11 — photo layer pending; add assets/img/hero-person.webp later
 - [ ] 12. **Projects grid** — 2-col cards + filters (All / Product / Strategy)
 - [ ] 13. **Project pages** — template: title, line, year, role, link, "Next project"
 - [ ] 14. **Contacts + footer** — LinkedIn, email, "Leave a request"

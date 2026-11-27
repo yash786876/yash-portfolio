@@ -50,7 +50,7 @@ Today the home page is one dark screen with nothing below it. Scrolling leads no
 
 **Hero placeholder**
 
-- R6. A full-screen dark section follows the intro. It shows the headline "Building businesses, then the tech behind them" in the yellow display style, split into three parts spread across the width (reference 02).
+- R6. A full-screen dark section follows the intro. It shows the headline "AI & product" | "Builder" in the yellow display style, split across the width (reference 02), on a warm dark background with a subtle amber glow bottom-right (updated after the first build; was the backlog draft in three parts).
 - R7. The section is clearly a placeholder that Feature 11 replaces with the seated-person photo. Its structure lets that happen without touching the intro.
 - R8. On a 390px phone the headline stays readable and inside the frame, wrapping as needed.
 
