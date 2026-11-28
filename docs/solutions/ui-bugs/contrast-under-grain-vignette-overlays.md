@@ -1,7 +1,7 @@
 ---
 title: Text contrast under grain and vignette overlays can't be checked with DevTools or Lighthouse
 date: 2026-11-25
-last_updated: 2026-11-27
+last_updated: 2026-11-28
 category: ui-bugs
 module: global shell (grain, vignette, nav)
 problem_type: ui_bug
@@ -79,6 +79,8 @@ On dark pages it works the other way. Light text gets darker under the vignette 
 - **Attribute a low reading before fixing it.** Re-measure the same box with one layer hidden (for example the dust canvas set to `visibility: hidden`). If the ratio barely moves, that layer isn't the cause. That is how the 4.47:1 above was traced to the shell rather than to Feature 2's dust.
 - **Anything painted behind the nav spends the same budget.** The dust canvas (`js/dust.js`) fades out under the top 64px of the *viewport*, not of the canvas, because the nav is fixed and keeps sitting over the dust while the page scrolls. With the dust, the dark page's dimmed "Contacts" went from 4.75:1 to 4.63:1.
 - **Animated text opacity: measure the faintest frame.** If text pulses or fades while it is meant to be read, freeze it at its lowest opacity (for example `animation: none; opacity: .7`) before measuring. The intro's "Scroll" hint is kept between 0.7 and 1 so it stays at 6.2:1 or better.
+- **Text that crosses two backgrounds: measure each side separately.** The About headline (`about.html`, `.about__headline`) starts left of the centre line, so its first letters sit on the dark panel and the rest on cream. A single crop averages the two, so the result says nothing useful about either side. Crop the overlapping letters and the cream letters separately. Use `--light` for the panel side, where the glyph is lighter than the background. Measured 2026-11-28 at 1272×541: rust over cream 3.38:1, rust over the dark panel **2.43:1**. Both are large text (needs 3:1), so the panel side fails. It is known and accepted for now: the portrait's light dotted half is meant to sit under those letters, as in reference 05. Re-measure the panel side when the portrait image lands (planned path assets/img/portrait.webp, not in the repo yet). Hide the dust canvas while measuring it, so specks don't land in the crop.
+- **Large text has its own threshold.** Rust `#B5401E` on cream is about 3.4–3.7:1. That's fine for display headlines (24px+, or 18.66px+ bold, needs 3:1), but rust must not be used for body-size text on cream. CLAUDE.md already keeps rust to headlines and big numbers.
 - Don't accept DevTools or Lighthouse contrast results as proof for any text under the overlays.
 - Treat "stronger vignette" and "nav in the corners" as one design decision. If the corners must go darker everywhere, the nav has to move, get a backing, or change colour, and that is the user's call (Feature 1 plan KTD8 / Goal Capsule stop condition).
 
