@@ -141,7 +141,15 @@ body.is-dark {
 }
 
 .display { font-size: var(--fs-display); line-height: var(--lh-tight); font-weight: 600; color: var(--accent); letter-spacing: -0.02em; margin: 0; }
-.big-number { font-size: clamp(56px, 7vw, 96px); font-weight: 600; color: var(--accent); line-height: 1; }
+.big-number { font-size: clamp(56px, 7vw, 96px); font-weight: 600; color: var(--accent); line-height: 1;
+  letter-spacing: -0.02em; white-space: nowrap; }
+.big-number__value { font-variant-numeric: tabular-nums; }
+/* ₹ / Cr / + / M+: half size and raised; 24px floor keeps them large text (3:1) on phones */
+.big-number__mark { font-size: max(0.5em, 24px); vertical-align: 0.62em; margin: 0 0.04em; line-height: 0; }
+
+/* text for screen readers only */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* scroll reveal (js/reveal.js): hidden only until the script has put the ink blots in place */
 .reveal-pending [data-reveal] { opacity: 0; }

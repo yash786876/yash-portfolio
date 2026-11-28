@@ -46,6 +46,11 @@
     .about__section { min-height: 60vh; }
     .section-head h2 { margin: 0; font: inherit; }  /* label keeps the small section-head style */
 
+    /* 01 Numbers (Feature 7): 2x2 grid; numbers sized to the half-column, not the viewport */
+    .numbers { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s8) var(--s4); }
+    .numbers .big-number { margin: 0; font-size: clamp(44px, 5.5vw, 96px); }
+    .numbers__label { margin: var(--s1) 0 0; max-width: 15rem; font-size: var(--fs-small); line-height: 1.4; color: var(--ink); }
+
 
     @media (max-width: 899px) {
       .about { grid-template-columns: 1fr; }
@@ -55,6 +60,8 @@
       .about__headline { margin-left: 0; font-size: clamp(48px, 15vw, 96px); }
       .about__bio { max-width: none; margin-left: 0; }
       .about__section { min-height: 40vh; }
+      .numbers { gap: var(--s6) var(--s3); }
+      .numbers .big-number { font-size: 44px; }
       /* The whole nav sits over the dark panel at first, then over cream. */
       body.nav-on-dark { --nav-link: var(--ink-on-dark); --nav-link-dim: var(--ink-soft-on-dark); }
       body:not(.nav-on-dark) { --nav-name: var(--ink); }
@@ -85,6 +92,16 @@
 
       <section class="about__section" aria-labelledby="s-numbers">
         <div class="section-head"><h2 id="s-numbers">Numbers</h2><span>01</span></div>
+        <div class="numbers">
+          <div><p class="big-number" data-count data-spoken="₹8 crore"><span class="big-number__mark">₹</span><span class="big-number__value">8</span><span class="big-number__mark">Cr</span></p>
+            <p class="numbers__label" data-reveal>revenue built from zero in 24 months</p></div>
+          <div><p class="big-number" data-count data-spoken="2,500 plus"><span class="big-number__value">2,500</span><span class="big-number__mark">+</span></p>
+            <p class="numbers__label" data-reveal>retail counters reached</p></div>
+          <div><p class="big-number" data-count data-spoken="4 plus"><span class="big-number__value">4</span><span class="big-number__mark">+</span></p>
+            <p class="numbers__label" data-reveal>years across founding, sales, ops and tech consulting</p></div>
+          <div><p class="big-number" data-count data-spoken="20 million plus"><span class="big-number__value">20</span><span class="big-number__mark">M+</span></p>
+            <p class="numbers__label" data-reveal>customer records analysed at ZS</p></div>
+        </div>
       </section>
       <section class="about__section" aria-labelledby="s-what">
         <div class="section-head"><h2 id="s-what">What I do</h2><span>02</span></div>
@@ -101,6 +118,7 @@
   <script src="js/grain.js" defer></script>
   <script src="js/dust.js" defer></script>
   <script src="js/reveal.js" defer></script>
+  <script src="js/counter.js" defer></script>
   <script>
     // Phones: the nav is light while it sits over the dark panel, ink once cream reaches it.
     const panel = document.querySelector(".about__panel"), nav = document.querySelector(".nav");

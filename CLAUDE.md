@@ -28,7 +28,7 @@ Goal: recreate the *feel* with Yash's own content — never copy text, images or
 - `js/grain.js` — film grain overlay + vignette on every page
 - `js/dust.js` — drifting particles on canvas (`data-dust="dark|light|warm"`)
 - `js/reveal.js` — ink-blot → sharp text reveal (`data-reveal`; pages add the `reveal-pending` head snippet from the file's comment)
-- `js/counter.js` — count-up numbers (`data-count="50" data-suffix="+"`)
+- `js/counter.js` — count-up numbers: the markup holds the real value (`data-count` + `.big-number__mark` / `.big-number__value` parts, see the file comment)
 
 ## Layout rules
 - Tiny nav: name left; "Portfolio, About, Contacts" right (commas are part of the style)
