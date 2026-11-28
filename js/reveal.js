@@ -61,6 +61,6 @@
     const entering = entries.filter((e) => e.isIntersecting).map((e) => e.target)
       .sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
     entering.forEach((el, n) => { play(items.get(el), n * STAGGER); io.unobserve(el); });
-  }, { threshold: 0.2 });
+  }, { threshold: 0, rootMargin: "0px 0px -10% 0px" });   // plays once its top is 10% into view, at any height
   els.forEach((el) => io.observe(el));
 })();
