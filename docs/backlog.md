@@ -10,7 +10,7 @@ Build in order. Shared effects first so later pages reuse them. One loop per row
 - [x] 6. **Scroll reveal** — ink-blot → sharp text (`js/reveal.js`)
 - [x] 7. **01 Numbers** — count-up rust counters with labels
 - [x] 8. **02 What I do** — Go-to-market & growth · Operations & finance · Data & analytics · Business technology & AI
-- [ ] 9. **03 Industries** — Food & agro / Spices / Recycling / Healthcare / Travel / Consumer / VC
+- [ ] 9. **03 Industries** — FMCG / Food & agro / Spices / Pharma / Consumer brands / Retail & distribution / Marketing tech / Healthcare / Recycling / Venture capital
 - [ ] 10. **04 What matters to me** — 3 values
 - [ ] 11. **Home hero** — full-screen moody photo, headline spread across
   - Feature 11 — photo layer pending; add assets/img/hero-person.webp later

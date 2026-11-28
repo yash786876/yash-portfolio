@@ -57,6 +57,12 @@
     .services__num { margin: 0; font-size: 19px; font-weight: 700; color: var(--accent); line-height: 1; }
     .services__title { margin: var(--s1) 0 0; font-size: 26px; font-weight: 600; line-height: 1.15;
       letter-spacing: -0.01em; color: var(--accent); text-wrap: balance; }
+    /* 03 Industries (Feature 9): one flowing list; each item and its trailing slash never split. */
+    .industries__label { margin: 0; font-size: var(--fs-small); line-height: 1.4; color: var(--ink-soft); }
+    .industries__list { margin: var(--s3) 0 0; padding: 0; list-style: none;
+      font-size: clamp(28px, 2.5vw, 36px); font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); }
+    .industries__list li { display: inline; white-space: nowrap; }
+    .industries__slash { margin-left: 0.2em; font-weight: 300; font-size: 0.9em; color: var(--accent); }
     .services__text { margin: var(--s2) 0 0; max-width: 30rem; font-size: 15px; line-height: var(--lh-body); color: var(--ink); }
 
 
@@ -138,6 +144,19 @@
       </section>
       <section class="about__section" aria-labelledby="s-industries">
         <div class="section-head"><h2 id="s-industries">Industries</h2><span>03</span></div>
+        <p class="industries__label" data-reveal>Worked with businesses across industries</p>
+        <ul class="industries__list" role="list" data-reveal>
+          <li>FMCG<span class="industries__slash" aria-hidden="true">/</span></li>
+          <li>Food &amp; agro<span class="industries__slash" aria-hidden="true">/</span></li>
+          <li>Spices<span class="industries__slash" aria-hidden="true">/</span></li>
+          <li>Pharma<span class="industries__slash" aria-hidden="true">/</span></li>
+          <li>Consumer brands<span class="industries__slash" aria-hidden="true">/</span></li>
+          <li>Retail &amp; distribution<span class="industries__slash" aria-hidden="true">/</span></li>
+          <li>Marketing tech<span class="industries__slash" aria-hidden="true">/</span></li>
+          <li>Healthcare<span class="industries__slash" aria-hidden="true">/</span></li>
+          <li>Recycling<span class="industries__slash" aria-hidden="true">/</span></li>
+          <li>Venture capital</li>
+        </ul>
       </section>
       <section class="about__section" aria-labelledby="s-values">
         <div class="section-head"><h2 id="s-values">What matters to me</h2><span>04</span></div>
