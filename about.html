@@ -51,6 +51,14 @@
     .numbers .big-number { margin: 0; font-size: clamp(44px, 5.5vw, 96px); }
     .numbers__label { margin: var(--s1) 0 0; max-width: 15rem; font-size: var(--fs-small); line-height: 1.4; color: var(--ink); }
 
+    /* 02 What I do (Feature 8): 2x2 grid of number + title + paragraph. Number 19px bold and
+       title a fixed 26px keep rust in the large-text class (3:1) at every width. */
+    .services { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s8) var(--s4); }
+    .services__num { margin: 0; font-size: 19px; font-weight: 700; color: var(--accent); line-height: 1; }
+    .services__title { margin: var(--s1) 0 0; font-size: 26px; font-weight: 600; line-height: 1.15;
+      letter-spacing: -0.01em; color: var(--accent); text-wrap: balance; }
+    .services__text { margin: var(--s2) 0 0; max-width: 30rem; font-size: 15px; line-height: var(--lh-body); color: var(--ink); }
+
 
     @media (max-width: 899px) {
       .about { grid-template-columns: 1fr; }
@@ -61,6 +69,7 @@
       .about__bio { max-width: none; margin-left: 0; }
       .numbers { gap: var(--s6) var(--s3); }
       .numbers .big-number { font-size: 44px; }
+      .services { grid-template-columns: 1fr; gap: var(--s6); }
       /* The whole nav sits over the dark panel at first, then over cream. */
       body.nav-on-dark { --nav-link: var(--ink-on-dark); --nav-link-dim: var(--ink-soft-on-dark); }
       body:not(.nav-on-dark) { --nav-name: var(--ink); }
@@ -104,6 +113,28 @@
       </section>
       <section class="about__section" aria-labelledby="s-what">
         <div class="section-head"><h2 id="s-what">What I do</h2><span>02</span></div>
+        <div class="services">
+          <article>
+            <p class="services__num">01</p>
+            <h3 class="services__title" data-reveal>Go-to-market &amp; growth</h3>
+            <p class="services__text" data-reveal>I built Shubhrashi from zero to ₹8 Cr in 24 months: GTM, target-setting, key accounts, a 76-client B2B network and 2,500+ retail counters.</p>
+          </article>
+          <article>
+            <p class="services__num">02</p>
+            <h3 class="services__title" data-reveal>Operations &amp; finance</h3>
+            <p class="services__text" data-reveal>I hired and ran a 19-person team, built supply chain from scratch at 98% order accuracy, cut production cost 25%, and ran cash flow, payroll and GST from day one.</p>
+          </article>
+          <article>
+            <p class="services__num">03</p>
+            <h3 class="services__title" data-reveal>Data &amp; analytics</h3>
+            <p class="services__text" data-reveal>SQL, Python, PySpark, Tableau and Power BI. At ZS I analysed 20M+ customer records to segment users and lift campaign CTR by 50%.</p>
+          </article>
+          <article>
+            <p class="services__num">04</p>
+            <h3 class="services__title" data-reveal>Business technology &amp; AI</h3>
+            <p class="services__text" data-reveal>BRDs, UAT, Salesforce Marketing Cloud setups and API integrations; now building AI tools that turn business workflows into products.</p>
+          </article>
+        </div>
       </section>
       <section class="about__section" aria-labelledby="s-industries">
         <div class="section-head"><h2 id="s-industries">Industries</h2><span>03</span></div>

@@ -9,7 +9,7 @@ Build in order. Shared effects first so later pages reuse them. One loop per row
 - [x] 5. **About: hero** — giant rust headline + short bio
 - [x] 6. **Scroll reveal** — ink-blot → sharp text (`js/reveal.js`)
 - [x] 7. **01 Numbers** — count-up rust counters with labels
-- [ ] 8. **02 What I do** — Venture & strategy · AI product building · Founder/operator · Data & analytics
+- [ ] 8. **02 What I do** — Go-to-market & growth · Operations & finance · Data & analytics · Business technology & AI
 - [ ] 9. **03 Industries** — Food & agro / Spices / Recycling / Healthcare / Travel / Consumer / VC
 - [ ] 10. **04 What matters to me** — 3 values
 - [ ] 11. **Home hero** — full-screen moody photo, headline spread across

@@ -5,7 +5,7 @@
 @font-face {
   font-family: "Outfit";
   font-style: normal;
-  font-weight: 300 600;
+  font-weight: 300 700;   /* the file's wght axis goes to 900; 700 is used for small bold rust numbers */
   font-display: swap;
   src: url("../assets/fonts/outfit-latin-var.woff2") format("woff2");
 }
