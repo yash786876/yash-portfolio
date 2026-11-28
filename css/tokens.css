@@ -143,6 +143,10 @@ body.is-dark {
 .display { font-size: var(--fs-display); line-height: var(--lh-tight); font-weight: 600; color: var(--accent); letter-spacing: -0.02em; margin: 0; }
 .big-number { font-size: clamp(56px, 7vw, 96px); font-weight: 600; color: var(--accent); line-height: 1; }
 
+/* scroll reveal (js/reveal.js): hidden only until the script has put the ink blots in place */
+.reveal-pending [data-reveal] { opacity: 0; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal-pending [data-reveal] { opacity: 1; }
 }

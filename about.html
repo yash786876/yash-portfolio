@@ -7,6 +7,8 @@
   <meta name="description" content="About Yash Santwani — founder, venture and AI product builder.">
   <link rel="preload" href="assets/fonts/outfit-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/tokens.css">
+  <script>document.documentElement.classList.add("reveal-pending");
+    setTimeout(() => document.documentElement.classList.remove("reveal-pending"), 3000);</script>
   <style>
     /* About = split layout (Feature 4). Left: fixed warm-dark panel with dust and a
        portrait slot. Right: cream column that scrolls, holding sections 01–04.
@@ -77,8 +79,8 @@
 
     <div class="about__content">
       <header class="about__lead">
-        <h1 class="about__headline">Clear plans,<br>real builds</h1>
-        <p class="about__bio">I'm a founder and business technologist. I started Shubhrashi, a spice brand under Malava Food Industries, worked as a Business Technology Associate at ZS, and now study at Masters' Union while working with MU Ventures. I turn messy business problems into clear plans — and build the AI tools to run them.</p>
+        <h1 class="about__headline" data-reveal>Clear plans,<br>real builds</h1>
+        <p class="about__bio" data-reveal>I'm a founder and business technologist. I started Shubhrashi, a spice brand under Malava Food Industries, worked as a Business Technology Associate at ZS, and now study at Masters' Union while working with MU Ventures. I turn messy business problems into clear plans — and build the AI tools to run them.</p>
       </header>
 
       <section class="about__section" aria-labelledby="s-numbers">
@@ -98,6 +100,7 @@
 
   <script src="js/grain.js" defer></script>
   <script src="js/dust.js" defer></script>
+  <script src="js/reveal.js" defer></script>
   <script>
     // Phones: the nav is light while it sits over the dark panel, ink once cream reaches it.
     const panel = document.querySelector(".about__panel"), nav = document.querySelector(".nav");
