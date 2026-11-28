@@ -76,6 +76,7 @@
   /* space (8-pt) */
   --s1: 8px; --s2: 16px; --s3: 24px; --s4: 32px; --s6: 48px; --s8: 64px; --s12: 96px; --s16: 128px;
   --gutter: 2.4rem;       /* page side margins / gutter */
+  --section-gap: 160px;   /* space between numbered sections (96px on phones, below) */
 
   /* motion */
   --ease: cubic-bezier(.25, 1, .5, 1);
@@ -150,6 +151,8 @@ body.is-dark {
 /* text for screen readers only */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+@media (max-width: 899px) { :root { --section-gap: 96px; } }
 
 /* scroll reveal (js/reveal.js): hidden only until the script has put the ink blots in place */
 .reveal-pending [data-reveal] { opacity: 0; }

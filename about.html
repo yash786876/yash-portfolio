@@ -43,7 +43,7 @@
       line-height: var(--lh-tight); letter-spacing: -0.02em; color: var(--accent); white-space: nowrap; }
     .about__bio { max-width: 22rem; margin: var(--s6) 0 0 auto; font-size: 15px; line-height: var(--lh-body);
       color: var(--ink); }
-    .about__section { min-height: 60vh; }
+    .about__section + .about__section { margin-top: var(--section-gap); }  /* ~160px desktop, 96px phone */
     .section-head h2 { margin: 0; font: inherit; }  /* label keeps the small section-head style */
 
     /* 01 Numbers (Feature 7): 2x2 grid; numbers sized to the half-column, not the viewport */
@@ -59,7 +59,6 @@
       .about__lead { min-height: 0; padding: var(--s8) 0 var(--s6); }
       .about__headline { margin-left: 0; font-size: clamp(48px, 15vw, 96px); }
       .about__bio { max-width: none; margin-left: 0; }
-      .about__section { min-height: 40vh; }
       .numbers { gap: var(--s6) var(--s3); }
       .numbers .big-number { font-size: 44px; }
       /* The whole nav sits over the dark panel at first, then over cream. */
