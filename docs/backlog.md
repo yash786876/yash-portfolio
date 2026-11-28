@@ -8,7 +8,7 @@ Build in order. Shared effects first so later pages reuse them. One loop per row
 - [x] 4. **About: split layout** — fixed portrait left (photo + dotted half), scrolling right column
 - [x] 5. **About: hero** — giant rust headline + short bio
 - [x] 6. **Scroll reveal** — ink-blot → sharp text (`js/reveal.js`)
-- [ ] 7. **01 Numbers** — count-up rust counters with labels
+- [x] 7. **01 Numbers** — count-up rust counters with labels
 - [ ] 8. **02 What I do** — Venture & strategy · AI product building · Founder/operator · Data & analytics
 - [ ] 9. **03 Industries** — Food & agro / Spices / Recycling / Healthcare / Travel / Consumer / VC
 - [ ] 10. **04 What matters to me** — 3 values
