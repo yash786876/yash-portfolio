@@ -13,7 +13,8 @@
   const DURATION = 1400, STAGGER = 120;
   const format = (n) => n.toLocaleString("en-IN");
 
-  const run = (el, delay) => setTimeout(() => {
+  // Set up at once (so a staggered number never flashes its final value), count after `delay`.
+  const run = (el, delay) => {
     const value = el.querySelector(".big-number__value");
     if (!value) return;
     const final = value.textContent, target = Number(final.replace(/[^\d]/g, ""));
@@ -33,16 +34,18 @@
     value.style.textAlign = "right";
     value.style.minWidth = `${value.getBoundingClientRect().width}px`;
 
-    const t0 = performance.now();
-    const tick = (now) => {
-      const k = Math.min(1, (now - t0) / DURATION), eased = 1 - (1 - k) ** 3;
-      value.textContent = k < 1 ? format(Math.round(target * eased)) : final;
-      if (k < 1) requestAnimationFrame(tick);
-      else value.style.minWidth = "";
-    };
     value.textContent = format(0);
-    requestAnimationFrame(tick);
-  }, delay);
+    setTimeout(() => {
+      const t0 = performance.now();
+      const tick = (now) => {
+        const k = Math.min(1, (now - t0) / DURATION), eased = 1 - (1 - k) ** 3;
+        value.textContent = k < 1 ? format(Math.round(target * eased)) : final;
+        if (k < 1) requestAnimationFrame(tick);
+        else value.style.minWidth = "";
+      };
+      requestAnimationFrame(tick);
+    }, delay);
+  };
 
   const io = new IntersectionObserver((entries) => {
     const entering = entries.filter((e) => e.isIntersecting).map((e) => e.target)
